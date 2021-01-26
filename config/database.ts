@@ -5,10 +5,16 @@
  * file.
  */
 
-import Env from '@ioc:Adonis/Core/Env'
-import { OrmConfig } from '@ioc:Adonis/Lucid/Orm'
-import Application from '@ioc:Adonis/Core/Application'
-import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
+import Env from '@ioc:Adonis/Core/Env';
+import { OrmConfig } from '@ioc:Adonis/Lucid/Orm';
+import Application from '@ioc:Adonis/Core/Application';
+import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database';
+import { join } from 'path';
+
+const relativeDataPath: string = Env.get('DATA_PATH', 'data');
+const dataPath = relativeDataPath.startsWith('/')
+  ? relativeDataPath
+  : join(Application.appRoot, relativeDataPath);
 
 const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
   /*
@@ -38,7 +44,7 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
     sqlite: {
       client: 'sqlite',
       connection: {
-        filename: Application.databasePath(`${Env.get('DB_DATABASE', 'development')}.sqlite`),
+        filename: join(dataPath, `${Env.get('DB_DATABASE', 'ferdi')}.sqlite`),
       },
       useNullAsDefault: true,
       healthCheck: false,
@@ -108,6 +114,6 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
   |
   */
   orm: {},
-}
+};
 
-export default databaseConfig
+export default databaseConfig;
