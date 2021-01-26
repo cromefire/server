@@ -11,6 +11,7 @@ import Server from '@ioc:Adonis/Core/Server';
 */
 Server.middleware.register([
   'Adonis/Core/BodyParserMiddleware',
+  'Adonis/Addons/ShieldMiddleware',
   'App/Middleware/ConvertEmptyStringsToNull',
   // TODO: Check
   //'Adonis/Middleware/AuthInit',
@@ -37,7 +38,6 @@ Server.middleware.registerNamed({
   // TODO: Fix
   //auth: 'Adonis/Middleware/Auth',
   //guest: 'Adonis/Middleware/AllowGuestOnly',
-  //shield: 'Adonis/Middleware/Shield',
 });
 
 /*
