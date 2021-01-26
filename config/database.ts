@@ -11,7 +11,7 @@ import Application from '@ioc:Adonis/Core/Application';
 import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database';
 import { join } from 'path';
 
-const relativeDataPath: string = Env.get('DATA_PATH', 'data');
+const relativeDataPath: string = Env.get('DATA_DIR', 'data');
 const dataPath = relativeDataPath.startsWith('/')
   ? relativeDataPath
   : join(Application.appRoot, relativeDataPath);
