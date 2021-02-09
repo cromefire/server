@@ -36,8 +36,9 @@ Server.middleware.register([
 */
 Server.middleware.registerNamed({
   // TODO: Fix
-  //auth: 'Adonis/Middleware/Auth',
-  //guest: 'Adonis/Middleware/AllowGuestOnly',
+  auth: 'App/Middleware/Auth',
+  guest: 'App/Middleware/AllowGuestOnly',
+  shield: 'Adonis/Addons/ShieldMiddleware',
 });
 
 /*
@@ -51,8 +52,8 @@ Server.middleware.registerNamed({
 |
 */
 // TODO: Fix
-/*const serverMiddleware = [
-  'Adonis/Middleware/Static',
-  'Adonis/Middleware/Cors',
+Server.middleware.register([
+  //'Adonis/Middleware/Static',
+  //'Adonis/Middleware/Cors',
   'App/Middleware/HandleDoubleSlash',
-];*/
+]);

@@ -14,10 +14,10 @@ Sentry.init({ dsn: 'https://34e9a42c1de24048b7bfc980211dd7c8@sentry.io/1838449' 
 |
 */
 
-import 'reflect-metadata'
-import sourceMapSupport from 'source-map-support'
-import { Ignitor } from '@adonisjs/core/build/standalone'
+import 'reflect-metadata';
+import sourceMapSupport from 'source-map-support';
+import { Ignitor } from '@adonisjs/core/build/standalone';
 
-sourceMapSupport.install({ handleUncaughtExceptions: false })
+sourceMapSupport.install({ handleUncaughtExceptions: false });
 
-new Ignitor(__dirname).httpServer().start()
+new Ignitor(__dirname).httpServer().start();

@@ -61,7 +61,7 @@ Route.group(() => {
 if (Env.get('IS_DASHBOARD_ENABLED') !== 'false') {
   Route.group(() => {
     // Auth
-    Route.get('login', async ({ view }) => view.render('dashboard.login')).middleware('guest');
+    Route.get('login', async ({ view }) => view.render('dashboard/login')).middleware('guest');
     Route.post('login', 'DashboardController.login').middleware('guest').as('login');
 
     // Reset password
@@ -84,23 +84,21 @@ if (Env.get('IS_DASHBOARD_ENABLED') !== 'false') {
     Route.post('reset', 'DashboardController.resetPassword').middleware('guest');
 
     // Dashboard
-    Route.get('account', 'DashboardController.account').middleware('auth:session');
-    Route.post('account', 'DashboardController.edit').middleware('auth:session');
+    Route.get('account', 'DashboardController.account').middleware('auth:web');
+    Route.post('account', 'DashboardController.edit').middleware('auth:web');
 
-    Route.get('data', 'DashboardController.data').middleware('auth:session');
+    Route.get('data', 'DashboardController.data').middleware('auth:web');
 
-    Route.get('export', 'DashboardController.export').middleware('auth:session');
-    Route.post('transfer', 'DashboardController.import').middleware('auth:session');
+    Route.get('export', 'DashboardController.export').middleware('auth:web');
+    Route.post('transfer', 'DashboardController.import').middleware('auth:web');
     Route.get('transfer', async ({ view }) => view.render('dashboard.transfer')).middleware(
-      'auth:session',
+      'auth:web',
     );
 
-    Route.get('delete', async ({ view }) => view.render('dashboard.delete')).middleware(
-      'auth:session',
-    );
-    Route.post('delete', 'DashboardController.delete').middleware('auth:session');
+    Route.get('delete', async ({ view }) => view.render('dashboard.delete')).middleware('auth:web');
+    Route.post('delete', 'DashboardController.delete').middleware('auth:web');
 
-    Route.get('logout', 'DashboardController.logout').middleware('auth:session');
+    Route.get('logout', 'DashboardController.logout').middleware('auth:web');
 
     Route.get('*', async ({ response }) => response.redirect('/user/account'));
   })
@@ -137,7 +135,7 @@ Route.get('terms', async ({ response }) => response.redirect('/terms.html'));
 Route.get('privacy', async ({ response }) => response.redirect('/privacy.html'));
 
 // Index
-Route.get('/', async ({ view }) => view.render('others.index'));
+Route.get('/', async ({ view }) => view.render('others/index'));
 
 // 404 handler
 Route.get('/*', async ({ response }) => response.redirect('/'));

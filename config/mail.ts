@@ -5,8 +5,8 @@
  * file.
  */
 
-import Env from '@ioc:Adonis/Core/Env'
-import { MailConfig } from '@ioc:Adonis/Addons/Mail'
+import Env from '@ioc:Adonis/Core/Env';
+import { MailConfig } from '@ioc:Adonis/Addons/Mail';
 
 const mailConfig: MailConfig = {
   /*
@@ -110,6 +110,6 @@ const mailConfig: MailConfig = {
       key: Env.get('SPARKPOST_API_KEY'),
     },
   },
-}
+};
 
-export default mailConfig
+export default mailConfig;
