@@ -1,7 +1,14 @@
 {
-  "extends": ["plugin:adonis/typescriptApp", "prettier", "prettier/@typescript-eslint"],
-  "plugins": ["prettier"],
+  "extends": [
+    "plugin:adonis/typescriptApp",
+    "prettier"
+  ],
+  "plugins": [
+    "prettier"
+  ],
   "rules": {
-    "prettier/prettier": ["error"]
+    "prettier/prettier": [
+      "error"
+    ]
   }
 }

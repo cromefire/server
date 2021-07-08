@@ -2,7 +2,7 @@
  * Config source: https://git.io/JvyKy
  *
  * Feel free to let us know via PR, if you find something broken in this config
- * file.
+ * file.-
  */
 
 import { AuthConfig } from '@ioc:Adonis/Addons/Auth';
@@ -17,9 +17,9 @@ import { AuthConfig } from '@ioc:Adonis/Addons/Auth';
 |
 */
 const authConfig: AuthConfig = {
-  // TODO: Check
+  // TODO: Use JWT again, if ever available
   guard: 'api',
-  list: {
+  guards: {
     /*
     |--------------------------------------------------------------------------
     | Web Guard

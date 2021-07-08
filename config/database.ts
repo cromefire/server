@@ -6,7 +6,6 @@
  */
 
 import Env from '@ioc:Adonis/Core/Env';
-import { OrmConfig } from '@ioc:Adonis/Lucid/Orm';
 import Application from '@ioc:Adonis/Core/Application';
 import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database';
 import { join } from 'path';
@@ -16,7 +15,7 @@ const dataPath = relativeDataPath.startsWith('/')
   ? relativeDataPath
   : join(Application.appRoot, relativeDataPath);
 
-const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
+const databaseConfig: DatabaseConfig = {
   /*
   |--------------------------------------------------------------------------
   | Connection
@@ -100,20 +99,6 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
       debug: Env.get('DB_DEBUG', false),
     },
   },
-
-  /*
-  |--------------------------------------------------------------------------
-  | ORM Configuration
-  |--------------------------------------------------------------------------
-  |
-  | Following are some of the configuration options to tweak the conventional
-  | settings of the ORM. For example:
-  |
-  | - Define a custom function to compute the default table name for a given model.
-  | - Or define a custom function to compute the primary key for a given model.
-  |
-  */
-  orm: {},
 };
 
 export default databaseConfig;

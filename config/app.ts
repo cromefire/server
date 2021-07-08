@@ -32,7 +32,7 @@ export const name = Env.get('APP_NAME', 'Ferdi');
 | to encrypt cookies, sessions and other sensitive data.
 |
 */
-export const appKey = Env.getOrFail('APP_KEY');
+export const appKey = Env.get('APP_KEY');
 
 export const http: ServerConfig = {
   /*

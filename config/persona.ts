@@ -1,5 +1,3 @@
-'use strict'
-
 /*
 |--------------------------------------------------------------------------
 | Persona
@@ -10,7 +8,7 @@
 |
 */
 
-module.exports = {
+const personaConfig: any = {
   /*
   |--------------------------------------------------------------------------
   | Uids
@@ -71,7 +69,7 @@ module.exports = {
   | The model to be used for verifying and creating users
   |
   */
-  model: 'App/Models/User',
+  model: () => import('App/Models/User'),
 
   /*
   |--------------------------------------------------------------------------
@@ -93,6 +91,8 @@ module.exports = {
   |
   */
   validationMessages: () => {
-    return {}
-  }
-}
+    return {};
+  },
+};
+
+export default personaConfig;
