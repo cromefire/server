@@ -20,5 +20,7 @@ This message was sent automatically. Please do not reply.
       message.from(Env.get('MAIL_SENDER'));
       message.to(user.email);
     });
-  } catch (e) {}
+  } catch (e) {
+    console.log(`Couldn't send mail: ${e}`);
+  }
 });
