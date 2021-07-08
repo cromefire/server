@@ -10,8 +10,7 @@ import Server from '@ioc:Adonis/Core/Server';
 |
 */
 Server.middleware.register([
-  'Adonis/Core/BodyParserMiddleware',
-  'Adonis/Addons/ShieldMiddleware',
+  () => import('@ioc:Adonis/Core/BodyParser'),
   'App/Middleware/ConvertEmptyStringsToNull',
   // TODO: Check
   //'Adonis/Middleware/AuthInit',
@@ -35,10 +34,9 @@ Server.middleware.register([
 |
 */
 Server.middleware.registerNamed({
-  // TODO: Fix
   auth: 'App/Middleware/Auth',
   guest: 'App/Middleware/AllowGuestOnly',
-  shield: 'Adonis/Addons/ShieldMiddleware',
+  shield: () => import('@ioc:Adonis/Addons/Shield'),
 });
 
 /*
