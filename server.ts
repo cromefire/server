@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/node';
 
-Sentry.init({ dsn: 'https://34e9a42c1de24048b7bfc980211dd7c8@sentry.io/1838449' });
+const dsn = process.env.SENTRY_DSN;
+
+Sentry.init({ dsn });
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +20,6 @@ import 'reflect-metadata';
 import sourceMapSupport from 'source-map-support';
 import { Ignitor } from '@adonisjs/core/build/standalone';
 
-sourceMapSupport.install({ handleUncaughtExceptions: false });
+sourceMapSupport.install({ handleUncaughtExceptions: true });
 
-new Ignitor(__dirname).httpServer().start();
+new Ignitor(__dirname).httpServer().start().catch(console.error);

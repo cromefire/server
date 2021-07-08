@@ -2,19 +2,18 @@ import Server from '@ioc:Adonis/Core/Server';
 
 /*
 |--------------------------------------------------------------------------
-| Global middleware
+| Server Middleware
 |--------------------------------------------------------------------------
 |
-| An array of global middleware, that will be executed in the order they
-| are defined for every HTTP requests.
+| Server level middleware are executed even when route for a given URL is
+| not registered. Features like `static assets` and `cors` needs better
+| control over request lifecycle.
 |
 */
 Server.middleware.register([
   () => import('@ioc:Adonis/Core/BodyParser'),
-  'App/Middleware/ConvertEmptyStringsToNull',
-  // TODO: Check
-  //'Adonis/Middleware/AuthInit',
-  //'Adonis/Middleware/Session',
+  () => import('App/Middleware/ConvertEmptyStringsToNull'),
+  () => import('App/Middleware/HandleDoubleSlash'),
 ]);
 
 /*
@@ -34,24 +33,7 @@ Server.middleware.register([
 |
 */
 Server.middleware.registerNamed({
-  auth: 'App/Middleware/Auth',
-  guest: 'App/Middleware/AllowGuestOnly',
+  auth: () => import('App/Middleware/Auth'),
+  guest: () => import('App/Middleware/AllowOnlyGuest'),
   shield: () => import('@ioc:Adonis/Addons/Shield'),
 });
-
-/*
-|--------------------------------------------------------------------------
-| Server Middleware
-|--------------------------------------------------------------------------
-|
-| Server level middleware are executed even when route for a given URL is
-| not registered. Features like `static assets` and `cors` needs better
-| control over request lifecycle.
-|
-*/
-// TODO: Fix
-Server.middleware.register([
-  //'Adonis/Middleware/Static',
-  //'Adonis/Middleware/Cors',
-  'App/Middleware/HandleDoubleSlash',
-]);
