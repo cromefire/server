@@ -18,7 +18,18 @@
       "Database/*": [
         "./database/*"
       ]
-    }
+    },
+    "types": [
+      "@adonisjs/core",
+      "@adonisjs/repl",
+      "@adonisjs/session",
+      "@adonisjs/view",
+      "@adonisjs/lucid",
+      "@adonisjs/mail",
+      "@adonisjs/auth",
+      "@adonisjs/shield",
+      "@adonisjs/validator"
+    ]
   },
   "include": [
     "**/*.ts"
