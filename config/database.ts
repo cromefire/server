@@ -5,13 +5,13 @@
  * file.
  */
 
-import Env from '@ioc:Adonis/Core/Env';
-import Application from '@ioc:Adonis/Core/Application';
-import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database';
-import { join } from 'path';
+import Env from "@ioc:Adonis/Core/Env";
+import Application from "@ioc:Adonis/Core/Application";
+import { DatabaseConfig } from "@ioc:Adonis/Lucid/Database";
+import { join } from "path";
 
-const relativeDataPath: string = Env.get('DATA_DIR', 'data');
-const dataPath = relativeDataPath.startsWith('/')
+const relativeDataPath: string = Env.get("DATA_DIR", "data");
+const dataPath = relativeDataPath.startsWith("/")
   ? relativeDataPath
   : join(Application.appRoot, relativeDataPath);
 
@@ -26,7 +26,7 @@ const databaseConfig: DatabaseConfig = {
   | file.
   |
   */
-  connection: Env.get('DB_CONNECTION', 'sqlite'),
+  connection: Env.get("DB_CONNECTION", "sqlite"),
 
   connections: {
     /*
@@ -41,13 +41,13 @@ const databaseConfig: DatabaseConfig = {
     |
     */
     sqlite: {
-      client: 'sqlite',
+      client: "sqlite",
       connection: {
-        filename: join(dataPath, `${Env.get('DB_DATABASE', 'ferdi')}.sqlite`),
+        filename: join(dataPath, `${Env.get("DB_DATABASE", "ferdi")}.sqlite`),
       },
       useNullAsDefault: true,
       healthCheck: false,
-      debug: Env.get('DB_DEBUG', false),
+      debug: Env.get("DB_DEBUG", false),
     },
 
     /*
@@ -62,16 +62,16 @@ const databaseConfig: DatabaseConfig = {
     |
     */
     mysql: {
-      client: 'mysql',
+      client: "mysql",
       connection: {
-        host: Env.get('DB_HOST', 'localhost'),
-        port: Env.get('DB_PORT', '3306'),
-        user: Env.get('DB_USER', 'root'),
-        password: Env.get('DB_PASSWORD', ''),
-        database: Env.get('DB_DATABASE', 'ferdi'),
+        host: Env.get("DB_HOST", "localhost"),
+        port: Env.get("DB_PORT", "3306"),
+        user: Env.get("DB_USER", "root"),
+        password: Env.get("DB_PASSWORD", ""),
+        database: Env.get("DB_DATABASE", "ferdi"),
       },
       healthCheck: false,
-      debug: Env.get('DB_DEBUG', false),
+      debug: Env.get("DB_DEBUG", false),
     },
 
     /*
@@ -86,17 +86,17 @@ const databaseConfig: DatabaseConfig = {
     |
     */
     pg: {
-      client: 'pg',
+      client: "pg",
       connection: {
-        host: Env.get('DB_HOST', 'localhost'),
-        port: Env.get('DB_PORT', '5432'),
-        user: Env.get('DB_USER', 'postgres'),
-        password: Env.get('DB_PASSWORD', ''),
-        database: Env.get('DB_DATABASE', 'ferdi'),
-        ssl: Env.get('DB_SSL', 'true'),
+        host: Env.get("DB_HOST", "localhost"),
+        port: Env.get("DB_PORT", "5432"),
+        user: Env.get("DB_USER", "postgres"),
+        password: Env.get("DB_PASSWORD", ""),
+        database: Env.get("DB_DATABASE", "ferdi"),
+        ssl: Env.get("DB_SSL", "true"),
       },
       healthCheck: false,
-      debug: Env.get('DB_DEBUG', false),
+      debug: Env.get("DB_DEBUG", false),
     },
   },
 };

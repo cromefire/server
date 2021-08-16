@@ -5,10 +5,10 @@
  * file.
  */
 
-import proxyAddr from 'proxy-addr';
-import Env from '@ioc:Adonis/Core/Env';
-import { ServerConfig } from '@ioc:Adonis/Core/Server';
-import { LoggerConfig } from '@ioc:Adonis/Core/Logger';
+import proxyAddr from "proxy-addr";
+import Env from "@ioc:Adonis/Core/Env";
+import { ServerConfig } from "@ioc:Adonis/Core/Server";
+import { LoggerConfig } from "@ioc:Adonis/Core/Logger";
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +21,7 @@ import { LoggerConfig } from '@ioc:Adonis/Core/Logger';
 |
 */
 
-export const name = Env.get('APP_NAME', 'Ferdi');
+export const name = Env.get("APP_NAME", "Ferdi");
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +32,7 @@ export const name = Env.get('APP_NAME', 'Ferdi');
 | to encrypt cookies, sessions and other sensitive data.
 |
 */
-export const appKey = Env.get('APP_KEY');
+export const appKey = Env.get("APP_KEY");
 
 export const http: ServerConfig = {
   /*
@@ -60,7 +60,7 @@ export const http: ServerConfig = {
   | values. Read documentation for that.
   |
   */
-  trustProxy: proxyAddr.compile('loopback'),
+  trustProxy: proxyAddr.compile("loopback"),
 
   /*
   |--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ export const http: ServerConfig = {
   | in request url.
   |
   */
-  jsonpCallbackName: 'callback',
+  jsonpCallbackName: "callback",
 
   /*
   |--------------------------------------------------------------------------
@@ -124,7 +124,7 @@ export const http: ServerConfig = {
   cookie: {
     httpOnly: true,
     sameSite: false,
-    path: '/',
+    path: "/",
     maxAge: 7200,
   },
 };
@@ -139,7 +139,7 @@ export const views = {
   | production to optimize view loading time.
   |
   */
-  cache: Env.get('CACHE_VIEWS', true),
+  cache: Env.get("CACHE_VIEWS", true),
 };
 
 export const locales = {
@@ -154,7 +154,7 @@ export const locales = {
   | file, database
   |
   */
-  loader: 'file',
+  loader: "file",
 
   /*
   |--------------------------------------------------------------------------
@@ -166,7 +166,7 @@ export const locales = {
   | based on HTTP headers/query string.
   |
   */
-  locale: 'en',
+  locale: "en",
 };
 
 export const logger: LoggerConfig = {
@@ -182,7 +182,7 @@ export const logger: LoggerConfig = {
   | reading the `name` property from the `package.json` file.
   |
   */
-  name: Env.get('APP_NAME'),
+  name: Env.get("APP_NAME"),
 
   /*
   |--------------------------------------------------------------------------
@@ -204,7 +204,7 @@ export const logger: LoggerConfig = {
   | at deployment level and not code level.
   |
   */
-  level: Env.get('LOG_LEVEL', 'info'),
+  level: Env.get("LOG_LEVEL", "info"),
 
   /*
   |--------------------------------------------------------------------------
@@ -215,5 +215,5 @@ export const logger: LoggerConfig = {
   | can have huge impact on performance.
   |
   */
-  prettyPrint: Env.get('NODE_ENV') === 'development',
+  prettyPrint: Env.get("NODE_ENV") === "development",
 };

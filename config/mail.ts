@@ -5,8 +5,8 @@
  * file.
  */
 
-import Env from '@ioc:Adonis/Core/Env';
-import { MailConfig } from '@ioc:Adonis/Addons/Mail';
+import Env from "@ioc:Adonis/Core/Env";
+import { MailConfig } from "@ioc:Adonis/Addons/Mail";
 
 const mailConfig: MailConfig = {
   /*
@@ -18,7 +18,7 @@ const mailConfig: MailConfig = {
   | a mailer
   |
   */
-  mailer: 'smtp',
+  mailer: "smtp",
 
   /*
   |--------------------------------------------------------------------------
@@ -43,15 +43,15 @@ const mailConfig: MailConfig = {
     |
     */
     smtp: {
-      driver: 'smtp',
+      driver: "smtp",
       pool: true,
-      port: Env.get('SMTP_PORT', 2525),
-      host: Env.get('SMTP_HOST'),
-      secure: JSON.parse(Env.get('MAIL_SSL', Env.get('SSL', false))),
+      port: Env.get("SMTP_PORT", 2525),
+      host: Env.get("SMTP_HOST"),
+      secure: JSON.parse(Env.get("MAIL_SSL", Env.get("SSL", false))),
       auth: {
-        type: 'login',
-        user: Env.get('MAIL_USERNAME'),
-        pass: Env.get('MAIL_PASSWORD'),
+        type: "login",
+        user: Env.get("MAIL_USERNAME"),
+        pass: Env.get("MAIL_PASSWORD"),
       },
       maxConnections: 5,
       maxMessages: 100,
@@ -72,11 +72,11 @@ const mailConfig: MailConfig = {
     |
     */
     ses: {
-      driver: 'ses',
-      apiVersion: '2010-12-01',
-      key: Env.get('SES_ACCESS_KEY'),
-      secret: Env.get('SES_ACCESS_SECRET'),
-      region: Env.get('SES_REGION'),
+      driver: "ses",
+      apiVersion: "2010-12-01",
+      key: Env.get("SES_ACCESS_KEY"),
+      secret: Env.get("SES_ACCESS_SECRET"),
+      region: Env.get("SES_REGION"),
       sslEnabled: true,
       sendingRate: 10,
       maxConnections: 5,
@@ -91,10 +91,10 @@ const mailConfig: MailConfig = {
     |
     */
     mailgun: {
-      driver: 'mailgun',
-      baseUrl: 'https://api.mailgun.net/v3',
-      domain: 'api.mailgun.net',
-      key: Env.get('MAILGUN_API_KEY'),
+      driver: "mailgun",
+      baseUrl: "https://api.mailgun.net/v3",
+      domain: "api.mailgun.net",
+      key: Env.get("MAILGUN_API_KEY"),
     },
 
     /*
@@ -106,9 +106,9 @@ const mailConfig: MailConfig = {
     |
     */
     sparkpost: {
-      driver: 'sparkpost',
-      baseUrl: 'https://api.sparkpost.com/api/v1',
-      key: Env.get('SPARKPOST_API_KEY'),
+      driver: "sparkpost",
+      baseUrl: "https://api.sparkpost.com/api/v1",
+      key: Env.get("SPARKPOST_API_KEY"),
     },
   },
 };

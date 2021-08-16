@@ -5,9 +5,9 @@
  * file.
  */
 
-import User from 'App/Models/User';
+import User from "App/Models/User";
 
-declare module '@ioc:Adonis/Addons/Auth' {
+declare module "@ioc:Adonis/Addons/Auth" {
   /*
   |--------------------------------------------------------------------------
   | Providers
@@ -66,8 +66,8 @@ declare module '@ioc:Adonis/Addons/Auth' {
     |
     */
     web: {
-      implementation: SessionGuardContract<'user', 'web'>;
-      config: SessionGuardConfig<'user'>;
+      implementation: SessionGuardContract<"user", "web">;
+      config: SessionGuardConfig<"user">;
     };
     /*
     |--------------------------------------------------------------------------
@@ -79,8 +79,8 @@ declare module '@ioc:Adonis/Addons/Auth' {
     |
     */
     api: {
-      implementation: OATGuardContract<'user', 'api'>;
-      config: OATGuardConfig<'user'>;
+      implementation: OATGuardContract<"user", "api">;
+      config: OATGuardConfig<"user">;
     };
     /*
     |--------------------------------------------------------------------------
@@ -92,8 +92,8 @@ declare module '@ioc:Adonis/Addons/Auth' {
     |
     */
     basic: {
-      implementation: BasicAuthGuardContract<'user', 'basic'>;
-      config: BasicAuthGuardConfig<'user'>;
+      implementation: BasicAuthGuardContract<"user", "basic">;
+      config: BasicAuthGuardConfig<"user">;
     };
   }
 }

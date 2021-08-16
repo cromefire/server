@@ -1,8 +1,8 @@
-import Hash from '@ioc:Adonis/Core/Hash';
-import { column, beforeSave, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm';
-import Token from 'App/Models/Token';
-import Service from 'App/Models/Service';
-import Workspace from 'App/Models/Workspace';
+import Hash from "@ioc:Adonis/Core/Hash";
+import { column, beforeSave, BaseModel, hasMany, HasMany } from "@ioc:Adonis/Lucid/Orm";
+import Token from "App/Models/Token";
+import Service from "App/Models/Service";
+import Workspace from "App/Models/Workspace";
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })

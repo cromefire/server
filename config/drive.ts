@@ -1,4 +1,4 @@
-import Env from '@ioc:Adonis/Core/Env';
+import Env from "@ioc:Adonis/Core/Env";
 
 const driveConfig = {
   /*
@@ -10,7 +10,7 @@ const driveConfig = {
   | defining a disk name
   |
   */
-  default: 'local',
+  default: "local",
 
   disks: {
     /*
@@ -23,7 +23,7 @@ const driveConfig = {
     */
     local: {
       root: `${__dirname}/../recipes`,
-      driver: 'local',
+      driver: "local",
     },
 
     /*
@@ -35,11 +35,11 @@ const driveConfig = {
     |
     */
     s3: {
-      driver: 's3',
-      key: Env.get('S3_KEY'),
-      secret: Env.get('S3_SECRET'),
-      bucket: Env.get('S3_BUCKET'),
-      region: Env.get('S3_REGION'),
+      driver: "s3",
+      key: Env.get("S3_KEY"),
+      secret: Env.get("S3_SECRET"),
+      bucket: Env.get("S3_BUCKET"),
+      region: Env.get("S3_REGION"),
     },
   },
 };

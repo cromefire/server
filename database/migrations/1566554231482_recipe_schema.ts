@@ -1,17 +1,17 @@
-import Schema from '@ioc:Adonis/Lucid/Schema';
+import Schema from "@ioc:Adonis/Lucid/Schema";
 
 export default class RecipeSchema extends Schema {
   public up() {
-    this.schema.createTable('recipes', (table) => {
+    this.schema.createTable("recipes", (table) => {
       table.increments();
-      table.string('name', 80).notNullable();
-      table.string('recipeId', 254).notNullable().unique();
-      table.json('data');
+      table.string("name", 80).notNullable();
+      table.string("recipeId", 254).notNullable().unique();
+      table.json("data");
       table.timestamps();
     });
   }
 
   public down() {
-    this.schema.dropTable('recipes');
+    this.schema.dropTable("recipes");
   }
 }

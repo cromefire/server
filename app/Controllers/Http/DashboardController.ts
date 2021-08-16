@@ -1,14 +1,14 @@
-import { rules, schema } from '@ioc:Adonis/Core/Validator';
+import { rules, schema } from "@ioc:Adonis/Core/Validator";
 
-import Service from 'App/Models/Service';
-import Workspace from 'App/Models/Workspace';
+import Service from "App/Models/Service";
+import Workspace from "App/Models/Workspace";
 
 // TODO: const Persona = use('Persona');
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
-import crypto from 'crypto';
-import { v4 as uuid } from 'uuid';
-import { ValidationException } from '@adonisjs/validator/build/src/ValidationException';
+import crypto from "crypto";
+import { v4 as uuid } from "uuid";
+import { ValidationException } from "@adonisjs/validator/build/src/ValidationException";
 
 class DashboardController {
   public async login({ request, response, auth, session }: HttpContextContract) {
@@ -23,23 +23,23 @@ class DashboardController {
       });
     } catch (e: unknown) {
       if (e instanceof ValidationException) {
-        session.flash('error', 'Invalid mail format');
-        return response.redirect('back');
+        session.flash("error", "Invalid mail format");
+        return response.redirect("back");
       }
       throw e;
     }
 
     const { mail, password } = body;
 
-    const hashedPassword = crypto.createHash('sha256').update(password).digest('base64');
+    const hashedPassword = crypto.createHash("sha256").update(password).digest("base64");
 
     try {
-      await auth.use('web').attempt(mail, hashedPassword);
+      await auth.use("web").attempt(mail, hashedPassword);
     } catch (error) {
-      session.flash('error', 'Invalid mail or password');
-      return response.redirect('back');
+      session.flash("error", "Invalid mail or password");
+      return response.redirect("back");
     }
-    return response.redirect('/user/account');
+    return response.redirect("/user/account");
   }
 
   public async forgotPassword({ request, view }: HttpContextContract) {
@@ -50,24 +50,24 @@ class DashboardController {
       schema: forgotSchema,
     });
     if (validation) {
-      return view.render('others.message', {
-        heading: 'Cannot reset your password',
-        text: 'If your provided E-Mail address is linked to an account, we have just sent an E-Mail to that address.',
+      return view.render("others.message", {
+        heading: "Cannot reset your password",
+        text: "If your provided E-Mail address is linked to an account, we have just sent an E-Mail to that address.",
       });
     }
     try {
       // TODO: await Persona.forgotPassword(request.input('mail'));
-      return view.render('others.message', {
-        heading: 'Reset password',
-        text: 'Function not implemented',
+      return view.render("others.message", {
+        heading: "Reset password",
+        text: "Function not implemented",
       });
     } catch (err) {
       console.error(err);
     }
 
-    return view.render('others.message', {
-      heading: 'Reset password',
-      text: 'If your provided E-Mail address is linked to an account, we have just sent an E-Mail to that address.',
+    return view.render("others.message", {
+      heading: "Reset password",
+      text: "If your provided E-Mail address is linked to an account, we have just sent an E-Mail to that address.",
     });
   }
 
@@ -84,8 +84,8 @@ class DashboardController {
       });
     } catch (e) {
       if (e instanceof ValidationException) {
-        session.flash('error', 'Passwords do not match');
-        return response.redirect('back');
+        session.flash("error", "Passwords do not match");
+        return response.redirect("back");
       }
       throw e;
     }
@@ -94,30 +94,30 @@ class DashboardController {
 
     // eslint-disable-next-line no-unused-vars
     const payload = {
-      password: crypto.createHash('sha256').update(password).digest('base64'),
+      password: crypto.createHash("sha256").update(password).digest("base64"),
       password_confirmation: crypto
-        .createHash('sha256')
+        .createHash("sha256")
         .update(password_confirmation)
-        .digest('base64'),
+        .digest("base64"),
     };
 
     try {
       // TODO: await Persona.updatePasswordByToken(token), payload);
-      return view.render('others.message', {
-        heading: 'Reset password',
-        text: 'Function not implemented',
+      return view.render("others.message", {
+        heading: "Reset password",
+        text: "Function not implemented",
       });
     } catch (e) {
-      return view.render('others.message', {
-        heading: 'Cannot reset your password',
-        text: 'Please make sure you are using a valid and recent link to reset your password and that your passwords entered match.',
+      return view.render("others.message", {
+        heading: "Cannot reset your password",
+        text: "Please make sure you are using a valid and recent link to reset your password and that your passwords entered match.",
       });
     }
 
     // eslint-disable-next-line no-unreachable
-    return view.render('others.message', {
-      heading: 'Reset password',
-      text: 'Successfully reset your password. You can now login to your account using your new password.',
+    return view.render("others.message", {
+      heading: "Reset password",
+      text: "Successfully reset your password. You can now login to your account using your new password.",
     });
   }
 
@@ -125,10 +125,10 @@ class DashboardController {
     try {
       await auth.check();
     } catch (error) {
-      return response.redirect('/user/login');
+      return response.redirect("/user/login");
     }
 
-    return view.render('dashboard.account', {
+    return view.render("dashboard.account", {
       username: auth.user.username,
       email: auth.user.email,
       lastname: auth.user.lastname,
@@ -146,8 +146,8 @@ class DashboardController {
       body = await request.validate({ schema: editSession });
     } catch (e) {
       if (e instanceof ValidationException) {
-        session.flash('errors', e.messages());
-        return response.redirect('back');
+        session.flash("errors", e.messages());
+        return response.redirect("back");
       }
       throw e;
     }
@@ -157,15 +157,15 @@ class DashboardController {
     // Check new username
     if (username !== auth.user!!.username) {
       const editUsernameSchema = schema.create({
-        username: schema.string({}, [rules.unique({ table: 'users', column: 'username' })]),
+        username: schema.string({}, [rules.unique({ table: "users", column: "username" })]),
         email: schema.string({}, [rules.email()]),
       });
       try {
         await request.validate({ schema: editUsernameSchema });
       } catch (e) {
         if (e instanceof ValidationException) {
-          session.flash('errors', e.messages());
-          return response.redirect('back');
+          session.flash("errors", e.messages());
+          return response.redirect("back");
         }
         throw e;
       }
@@ -177,15 +177,15 @@ class DashboardController {
         username: schema.string(),
         email: schema.string({}, [
           rules.email(),
-          rules.unique({ table: 'users', column: 'email' }),
+          rules.unique({ table: "users", column: "email" }),
         ]),
       });
       try {
         await request.validate({ schema: editEmailSchema });
       } catch (e) {
         if (e instanceof ValidationException) {
-          session.flash('errors', e.messages());
-          return response.redirect('back');
+          session.flash("errors", e.messages());
+          return response.redirect("back");
         }
         throw e;
       }
@@ -195,15 +195,15 @@ class DashboardController {
     const { user } = auth;
     user!!.username = username;
     user!!.email = email;
-    if (request.input('password')) {
+    if (request.input("password")) {
       user!!.password = crypto
-        .createHash('sha256')
-        .update(request.input('password'))
-        .digest('base64');
+        .createHash("sha256")
+        .update(request.input("password"))
+        .digest("base64");
     }
     await user!!.save();
 
-    return view.render('dashboard.account', {
+    return view.render("dashboard.account", {
       username: user!!.username,
       email: user!!.email,
       success: true,
@@ -212,10 +212,10 @@ class DashboardController {
 
   public async data({ auth, view }: HttpContextContract) {
     const general = auth.user;
-    const services = (await auth.user!!.services.builder.select('*')).map((s) => s.toJSON());
-    const workspaces = (await auth.user!!.workspaces.builder.select('*')).map((s) => s.toJSON());
+    const services = (await auth.user!!.services.builder.select("*")).map((s) => s.toJSON());
+    const workspaces = (await auth.user!!.workspaces.builder.select("*")).map((s) => s.toJSON());
 
-    return view.render('dashboard.data', {
+    return view.render("dashboard.data", {
       username: general!!.username,
       mail: general!!.email,
       stringify: JSON.stringify,
@@ -226,8 +226,8 @@ class DashboardController {
 
   public async export({ auth, response }: HttpContextContract) {
     const general = auth.user;
-    const services = (await auth.user!!.services.builder.select('*')).map((s) => s.toJSON());
-    const workspaces = (await auth.user!!.workspaces.builder.select('*')).map((s) => s.toJSON());
+    const services = (await auth.user!!.services.builder.select("*")).map((s) => s.toJSON());
+    const workspaces = (await auth.user!!.workspaces.builder.select("*")).map((s) => s.toJSON());
 
     const exportData = {
       username: general!!.username,
@@ -237,8 +237,8 @@ class DashboardController {
     };
 
     return response
-      .header('Content-Type', 'application/force-download')
-      .header('Content-disposition', 'attachment; filename=export.ferdi-data')
+      .header("Content-Type", "application/force-download")
+      .header("Content-disposition", "attachment; filename=export.ferdi-data")
       .send(exportData);
   }
 
@@ -251,8 +251,8 @@ class DashboardController {
       body = await request.validate({ schema: importSchema });
     } catch (e) {
       if (e instanceof ValidationException) {
-        session.flash('errors', e.messages);
-        return response.redirect('back');
+        session.flash("errors", e.messages);
+        return response.redirect("back");
       }
       throw e;
     }
@@ -263,13 +263,13 @@ class DashboardController {
     try {
       imported = file.toJSON();
     } catch (e) {
-      session.flash('error', 'Invalid Ferdi account file');
-      return response.redirect('back');
+      session.flash("error", "Invalid Ferdi account file");
+      return response.redirect("back");
     }
 
     if (!imported || !imported.services || !imported.workspaces) {
-      session.flash('error', 'Invalid Ferdi account file (2)');
-      return response.redirect('back');
+      session.flash("error", "Invalid Ferdi account file (2)");
+      return response.redirect("back");
     }
 
     const serviceIdTranslation = {};
@@ -284,8 +284,8 @@ class DashboardController {
         } while (
           parseInt(
             (
-              await Service.query().where('serviceId', serviceId).count('*', 'total').select()
-            )[0].$getAttribute('total'),
+              await Service.query().where("serviceId", serviceId).count("*", "total").select()
+            )[0].$getAttribute("total"),
             10,
           ) > 0
         );
@@ -302,8 +302,8 @@ class DashboardController {
       }
     } catch (e) {
       const errorMessage = `Could not import your services into our system.\nError: ${e}`;
-      return view.render('others.message', {
-        heading: 'Error while importing',
+      return view.render("others.message", {
+        heading: "Error while importing",
         text: errorMessage,
       });
     }
@@ -317,8 +317,8 @@ class DashboardController {
         } while (
           parseInt(
             (
-              await Workspace.query().where('workspaceId', workspaceId).count('*', 'total')
-            )[0].$getAttribute('total'),
+              await Workspace.query().where("workspaceId", workspaceId).count("*", "total")
+            )[0].$getAttribute("total"),
             10,
           ) > 0
         );
@@ -336,27 +336,27 @@ class DashboardController {
       }
     } catch (e) {
       const errorMessage = `Could not import your workspaces into our system.\nError: ${e}`;
-      return view.render('others.message', {
-        heading: 'Error while importing',
+      return view.render("others.message", {
+        heading: "Error while importing",
         text: errorMessage,
       });
     }
 
-    return view.render('others.message', {
-      heading: 'Successfully imported',
-      text: 'Your account has been imported, you can now login as usual!',
+    return view.render("others.message", {
+      heading: "Successfully imported",
+      text: "Your account has been imported, you can now login as usual!",
     });
   }
 
   public async logout({ auth, response }: HttpContextContract) {
-    await auth.use('web').logout();
-    return response.redirect('/user/login');
+    await auth.use("web").logout();
+    return response.redirect("/user/login");
   }
 
   public async delete({ auth, response }: HttpContextContract) {
     await auth.user!!.delete();
-    await auth.use('web').logout();
-    return response.redirect('/user/login');
+    await auth.use("web").logout();
+    return response.redirect("/user/login");
   }
 }
 

@@ -19,7 +19,7 @@ const personaConfig: any = {
   | input
   |
   */
-  uids: ['email'],
+  uids: ["email"],
 
   /*
   |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ const personaConfig: any = {
   | The name of the email field inside the database and the user payload.
   |
   */
-  email: 'email',
+  email: "email",
 
   /*
   |--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ const personaConfig: any = {
   | The password field to be used for verifying and storing user password
   |
   */
-  password: 'password',
+  password: "password",
 
   /*
   |--------------------------------------------------------------------------
@@ -49,7 +49,7 @@ const personaConfig: any = {
   | State of user when a new account is created
   |
   */
-  newAccountState: 'pending',
+  newAccountState: "pending",
 
   /*
   |--------------------------------------------------------------------------
@@ -59,7 +59,7 @@ const personaConfig: any = {
   | State of user after they verify their email address
   |
   */
-  verifiedAccountState: 'active',
+  verifiedAccountState: "active",
 
   /*
   |--------------------------------------------------------------------------
@@ -69,7 +69,7 @@ const personaConfig: any = {
   | The model to be used for verifying and creating users
   |
   */
-  model: () => import('App/Models/User'),
+  model: () => import("App/Models/User"),
 
   /*
   |--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ const personaConfig: any = {
   | expiry of a token.
   |
   */
-  dateFormat: 'YYYY-MM-DD HH:mm:ss',
+  dateFormat: "YYYY-MM-DD HH:mm:ss",
 
   /*
   |--------------------------------------------------------------------------

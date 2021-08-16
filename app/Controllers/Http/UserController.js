@@ -1,27 +1,27 @@
-const User = use('App/Models/User');
-const Service = use('App/Models/Service');
-const Workspace = use('App/Models/Workspace');
-const { validateAll } = use('Validator');
-const Env = use('Env');
+const User = use("App/Models/User");
+const Service = use("App/Models/Service");
+const Workspace = use("App/Models/Workspace");
+const { validateAll } = use("Validator");
+const Env = use("Env");
 
-const atob = require('atob');
-const btoa = require('btoa');
-const fetch = require('node-fetch');
-const { v4: uuid } = require('uuid');
-const crypto = require('crypto');
+const atob = require("atob");
+const btoa = require("btoa");
+const fetch = require("node-fetch");
+const { v4: uuid } = require("uuid");
+const crypto = require("crypto");
 
 const franzRequest = (route, method, auth) =>
   new Promise((resolve, reject) => {
-    const base = 'https://api.franzinfra.com/v1/';
+    const base = "https://api.franzinfra.com/v1/";
     const user =
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Ferdi/5.3.0-beta.1 Chrome/69.0.3497.128 Electron/4.2.4 Safari/537.36';
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Ferdi/5.3.0-beta.1 Chrome/69.0.3497.128 Electron/4.2.4 Safari/537.36";
 
     try {
       fetch(base + route, {
         method,
         headers: {
-          'Authorization': `Bearer ${auth}`,
-          'User-Agent': user,
+          "Authorization": `Bearer ${auth}`,
+          "User-Agent": user,
         },
       })
         .then((data) => data.json())
@@ -35,30 +35,30 @@ class UserController {
   // Register a new user
   async signup({ request, response, auth }) {
     // eslint-disable-next-line eqeqeq
-    if (Env.get('IS_REGISTRATION_ENABLED') == 'false') {
+    if (Env.get("IS_REGISTRATION_ENABLED") == "false") {
       return response.status(401).send({
-        message: 'Registration is disabled on this server',
+        message: "Registration is disabled on this server",
         status: 401,
       });
     }
 
     // Validate user input
     const validation = await validateAll(request.all(), {
-      firstname: 'required',
-      lastname: 'required',
-      email: 'required|email|unique:users,email',
-      password: 'required',
+      firstname: "required",
+      lastname: "required",
+      email: "required|email|unique:users,email",
+      password: "required",
     });
 
     if (validation.fails()) {
       return response.status(401).send({
-        message: 'Invalid POST arguments',
+        message: "Invalid POST arguments",
         messages: validation.messages(),
         status: 401,
       });
     }
 
-    const data = request.only(['firstname', 'lastname', 'email', 'password']);
+    const data = request.only(["firstname", "lastname", "email", "password"]);
 
     // Create user in DB
     let user;
@@ -71,7 +71,7 @@ class UserController {
       });
     } catch (e) {
       return response.status(401).send({
-        message: 'E-Mail Address already in use',
+        message: "E-Mail Address already in use",
         status: 401,
       });
     }
@@ -80,29 +80,29 @@ class UserController {
     const token = await auth.generate(user);
 
     return response.send({
-      message: 'Successfully created account',
+      message: "Successfully created account",
       token: token.token,
     });
   }
 
   // Login using an existing user
   async login({ request, response, auth }) {
-    if (!request.header('Authorization')) {
+    if (!request.header("Authorization")) {
       return response.status(401).send({
-        message: 'Please provide authorization',
+        message: "Please provide authorization",
         status: 401,
       });
     }
 
     // Get auth data from auth token
-    const authHeader = atob(request.header('Authorization').replace('Basic ', '')).split(':');
+    const authHeader = atob(request.header("Authorization").replace("Basic ", "")).split(":");
 
     // Check if user with email exists
-    const user = await User.query().where('email', authHeader[0]).first();
+    const user = await User.query().where("email", authHeader[0]).first();
     if (!user || !user.email) {
       return response.status(401).send({
-        message: 'User credentials not valid (Invalid mail)',
-        code: 'invalid-credentials',
+        message: "User credentials not valid (Invalid mail)",
+        code: "invalid-credentials",
         status: 401,
       });
     }
@@ -113,14 +113,14 @@ class UserController {
       token = await auth.attempt(user.email, authHeader[1]);
     } catch (e) {
       return response.status(401).send({
-        message: 'User credentials not valid',
-        code: 'invalid-credentials',
+        message: "User credentials not valid",
+        code: "invalid-credentials",
         status: 401,
       });
     }
 
     return response.send({
-      message: 'Successfully logged in',
+      message: "Successfully logged in",
       token: token.token,
     });
   }
@@ -130,32 +130,32 @@ class UserController {
     try {
       await auth.getUser();
     } catch (error) {
-      response.send('Missing or invalid api token');
+      response.send("Missing or invalid api token");
     }
 
     const settings =
-      typeof auth.user.settings === 'string' ? JSON.parse(auth.user.settings) : auth.user.settings;
+      typeof auth.user.settings === "string" ? JSON.parse(auth.user.settings) : auth.user.settings;
 
     return response.send({
-      accountType: 'individual',
+      accountType: "individual",
       beta: false,
       donor: {},
       email: auth.user.email,
       emailValidated: true,
       features: {},
       firstname: auth.user.username,
-      id: '82c1cf9d-ab58-4da2-b55e-aaa41d2142d8',
+      id: "82c1cf9d-ab58-4da2-b55e-aaa41d2142d8",
       isPremium: true,
       isSubscriptionOwner: true,
       lastname: auth.user.lastname,
-      locale: 'en-US',
+      locale: "en-US",
       ...(settings || {}),
     });
   }
 
   async updateMe({ request, response, auth }) {
     let settings = auth.user.settings || {};
-    if (typeof settings === 'string') {
+    if (typeof settings === "string") {
       settings = JSON.parse(settings);
     }
 
@@ -170,66 +170,66 @@ class UserController {
 
     return response.send({
       data: {
-        accountType: 'individual',
+        accountType: "individual",
         beta: false,
         donor: {},
         email: auth.user.email,
         emailValidated: true,
         features: {},
         firstname: auth.user.username,
-        id: '82c1cf9d-ab58-4da2-b55e-aaa41d2142d8',
+        id: "82c1cf9d-ab58-4da2-b55e-aaa41d2142d8",
         isPremium: true,
         isSubscriptionOwner: true,
         lastname: auth.user.lastname,
-        locale: 'en-US',
+        locale: "en-US",
         ...(newSettings || {}),
       },
-      status: ['data-updated'],
+      status: ["data-updated"],
     });
   }
 
   async import({ request, response, view }) {
     // eslint-disable-next-line eqeqeq
-    if (Env.get('IS_REGISTRATION_ENABLED') == 'false') {
+    if (Env.get("IS_REGISTRATION_ENABLED") == "false") {
       return response.status(401).send({
-        message: 'Registration is disabled on this server',
+        message: "Registration is disabled on this server",
         status: 401,
       });
     }
 
     // Validate user input
     const validation = await validateAll(request.all(), {
-      email: 'required|email|unique:users,email',
-      password: 'required',
+      email: "required|email|unique:users,email",
+      password: "required",
     });
     if (validation.fails()) {
-      let errorMessage = 'There was an error while trying to import your account:\n';
+      let errorMessage = "There was an error while trying to import your account:\n";
       for (const message of validation.messages()) {
-        if (message.validation === 'required') {
+        if (message.validation === "required") {
           errorMessage += `- Please make sure to supply your ${message.field}\n`;
-        } else if (message.validation === 'unique') {
-          errorMessage += '- There is already a user with this email.\n';
+        } else if (message.validation === "unique") {
+          errorMessage += "- There is already a user with this email.\n";
         } else {
           errorMessage += `${message.message}\n`;
         }
       }
-      return view.render('others.message', {
-        heading: 'Error while importing',
+      return view.render("others.message", {
+        heading: "Error while importing",
         text: errorMessage,
       });
     }
 
     const { email, password } = request.all();
 
-    const hashedPassword = crypto.createHash('sha256').update(password).digest('base64');
+    const hashedPassword = crypto.createHash("sha256").update(password).digest("base64");
 
     // eslint-disable-next-line eqeqeq
-    if (Env.get('CONNECT_WITH_FRANZ') == 'false') {
+    if (Env.get("CONNECT_WITH_FRANZ") == "false") {
       await User.create({
         email,
         password: hashedPassword,
-        username: 'Franz',
-        lastname: 'Franz',
+        username: "Franz",
+        lastname: "Franz",
       });
 
       return response.send(
@@ -237,9 +237,9 @@ class UserController {
       );
     }
 
-    const base = 'https://api.franzinfra.com/v1/';
+    const base = "https://api.franzinfra.com/v1/";
     const userAgent =
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Ferdi/5.3.0-beta.1 Chrome/69.0.3497.128 Electron/4.2.4 Safari/537.36';
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Ferdi/5.3.0-beta.1 Chrome/69.0.3497.128 Electron/4.2.4 Safari/537.36";
 
     // Try to get an authentication token
     let token;
@@ -250,28 +250,28 @@ class UserController {
       };
 
       const rawResponse = await fetch(`${base}auth/login`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(loginBody),
         headers: {
-          'Authorization': `Basic ${basicToken}`,
-          'User-Agent': userAgent,
-          'Content-Type': 'application/json',
-          'accept': '*/*',
-          'x-franz-source': 'Web',
+          "Authorization": `Basic ${basicToken}`,
+          "User-Agent": userAgent,
+          "Content-Type": "application/json",
+          "accept": "*/*",
+          "x-franz-source": "Web",
         },
       });
       const content = await rawResponse.json();
 
-      if (!content.message || content.message !== 'Successfully logged in') {
+      if (!content.message || content.message !== "Successfully logged in") {
         const errorMessage =
-          'Could not login into Franz with your supplied credentials. Please check and try again';
+          "Could not login into Franz with your supplied credentials. Please check and try again";
         return response.status(401).send(errorMessage);
       }
 
       token = content.token;
     } catch (e) {
       return response.status(401).send({
-        message: 'Cannot login to Franz',
+        message: "Cannot login to Franz",
         error: e,
       });
     }
@@ -279,14 +279,14 @@ class UserController {
     // Get user information
     let userInf = false;
     try {
-      userInf = await franzRequest('me', 'GET', token);
+      userInf = await franzRequest("me", "GET", token);
     } catch (e) {
       const errorMessage = `Could not get your user info from Franz. Please check your credentials or try again later.\nError: ${e}`;
       return response.status(401).send(errorMessage);
     }
     if (!userInf) {
       const errorMessage =
-        'Could not get your user info from Franz. Please check your credentials or try again later';
+        "Could not get your user info from Franz. Please check your credentials or try again later";
       return response.status(401).send(errorMessage);
     }
 
@@ -308,7 +308,7 @@ class UserController {
 
     // Import services
     try {
-      const services = await franzRequest('me/services', 'GET', token);
+      const services = await franzRequest("me/services", "GET", token);
 
       for (const service of services) {
         // Get new, unused uuid
@@ -316,7 +316,7 @@ class UserController {
         do {
           serviceId = uuid();
           // eslint-disable-next-line no-await-in-loop
-        } while ((await Service.query().where('serviceId', serviceId).fetch()).rows.length > 0);
+        } while ((await Service.query().where("serviceId", serviceId).fetch()).rows.length > 0);
 
         // eslint-disable-next-line no-await-in-loop
         await Service.create({
@@ -336,7 +336,7 @@ class UserController {
 
     // Import workspaces
     try {
-      const workspaces = await franzRequest('workspace', 'GET', token);
+      const workspaces = await franzRequest("workspace", "GET", token);
 
       for (const workspace of workspaces) {
         let workspaceId;
@@ -344,7 +344,7 @@ class UserController {
           workspaceId = uuid();
         } while (
           // eslint-disable-next-line no-await-in-loop
-          (await Workspace.query().where('workspaceId', workspaceId).fetch()).rows.length > 0
+          (await Workspace.query().where("workspaceId", workspaceId).fetch()).rows.length > 0
         );
 
         const services = workspace.services.map((service) => serviceIdTranslation[service]);
@@ -365,7 +365,7 @@ class UserController {
     }
 
     return response.send(
-      'Your account has been imported. You can now use your Franz account in Ferdi.',
+      "Your account has been imported. You can now use your Franz account in Ferdi.",
     );
   }
 }

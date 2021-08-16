@@ -1,8 +1,10 @@
-import * as Sentry from '@sentry/node';
+import * as Sentry from "@sentry/node";
 
 const dsn = process.env.SENTRY_DSN;
 
-Sentry.init({ dsn });
+if (dsn) {
+  Sentry.init({ dsn });
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +18,9 @@ Sentry.init({ dsn });
 |
 */
 
-import 'reflect-metadata';
-import sourceMapSupport from 'source-map-support';
-import { Ignitor } from '@adonisjs/core/build/standalone';
+import "reflect-metadata";
+import sourceMapSupport from "source-map-support";
+import { Ignitor } from "@adonisjs/core/build/standalone";
 
 sourceMapSupport.install({ handleUncaughtExceptions: true });
 

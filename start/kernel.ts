@@ -1,4 +1,4 @@
-import Server from '@ioc:Adonis/Core/Server';
+import Server from "@ioc:Adonis/Core/Server";
 
 /*
 |--------------------------------------------------------------------------
@@ -11,9 +11,9 @@ import Server from '@ioc:Adonis/Core/Server';
 |
 */
 Server.middleware.register([
-  () => import('@ioc:Adonis/Core/BodyParser'),
-  () => import('App/Middleware/ConvertEmptyStringsToNull'),
-  () => import('App/Middleware/HandleDoubleSlash'),
+  () => import("@ioc:Adonis/Core/BodyParser"),
+  () => import("App/Middleware/ConvertEmptyStringsToNull"),
+  () => import("App/Middleware/HandleDoubleSlash"),
 ]);
 
 /*
@@ -33,7 +33,7 @@ Server.middleware.register([
 |
 */
 Server.middleware.registerNamed({
-  auth: () => import('App/Middleware/Auth'),
-  guest: () => import('App/Middleware/AllowOnlyGuest'),
-  shield: () => import('@ioc:Adonis/Addons/Shield'),
+  auth: () => import("App/Middleware/Auth"),
+  guest: () => import("App/Middleware/AllowOnlyGuest"),
+  shield: () => import("@ioc:Adonis/Addons/Shield"),
 });

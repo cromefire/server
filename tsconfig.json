@@ -1,9 +1,12 @@
 {
+  "baseUrl": ".",
   "compilerOptions": {
     "strict": false,
     "target": "ES2020",
     "module": "commonjs",
-    "lib": ["ES2020"],
+    "lib": [
+      "ES2020"
+    ],
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "incremental": true,
@@ -17,28 +20,34 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
-    "rootDir": "./",
+    "rootDir": ".",
     "allowJs": true,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true
   },
-  "include": ["**/*"],
-  "exclude": ["node_modules", "build"],
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "officialrecipes",
+    "docs",
+    "public"
+  ],
   "paths": {
-    "App/*": ["./app/*"],
-    "Config/*": ["./config/*"],
-    "Contracts/*": ["./contracts/*"],
-    "Database/*": ["./database/*"]
-  },
-  "types": [
-    "@adonisjs/core",
-    "@adonisjs/repl",
-    "@adonisjs/session",
-    "@adonisjs/view",
-    "@adonisjs/lucid",
-    "@adonisjs/mail",
-    "@adonisjs/auth",
-    "@adonisjs/shield"
-  ]
+    "App/*": [
+      "./app/*"
+    ],
+    "Config/*": [
+      "./config/*"
+    ],
+    "Contracts/*": [
+      "./contracts/*"
+    ],
+    "Database/*": [
+      "./database/*"
+    ]
+  }
 }
