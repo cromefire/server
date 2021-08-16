@@ -1,30 +1,24 @@
 {
-  "baseUrl": ".",
+  "extends": "./node_modules/adonis-preset-ts/tsconfig",
   "compilerOptions": {
-    "strict": false,
-    "target": "ES2020",
-    "module": "commonjs",
-    "lib": [
-      "ES2020"
-    ],
-    "noUnusedLocals": true,
-    "skipLibCheck": true,
-    "incremental": true,
-    "noUnusedParameters": false,
-    "removeComments": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "outDir": "build",
-    "strictNullChecks": true,
-    "allowSyntheticDefaultImports": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "rootDir": ".",
     "allowJs": true,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "paths": {
+      "App/*": [
+        "./app/*"
+      ],
+      "Config/*": [
+        "./config/*"
+      ],
+      "Contracts/*": [
+        "./contracts/*"
+      ],
+      "Database/*": [
+        "./database/*"
+      ]
+    }
   },
   "include": [
     "**/*.ts"
@@ -35,19 +29,5 @@
     "officialrecipes",
     "docs",
     "public"
-  ],
-  "paths": {
-    "App/*": [
-      "./app/*"
-    ],
-    "Config/*": [
-      "./config/*"
-    ],
-    "Contracts/*": [
-      "./contracts/*"
-    ],
-    "Database/*": [
-      "./database/*"
-    ]
-  }
+  ]
 }
