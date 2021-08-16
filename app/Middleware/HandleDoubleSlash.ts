@@ -7,6 +7,6 @@ export default class HandleDoubleSlash {
       return response.redirect(request.url().replace(/\/{2,}/g, '/'));
     }
 
-    await next();
+    return await next();
   }
 }

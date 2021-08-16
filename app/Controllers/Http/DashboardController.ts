@@ -61,7 +61,9 @@ class DashboardController {
         heading: 'Reset password',
         text: 'Function not implemented',
       });
-    } catch (e) {}
+    } catch (err) {
+      console.error(err);
+    }
 
     return view.render('others.message', {
       heading: 'Reset password',
@@ -87,9 +89,10 @@ class DashboardController {
       }
       throw e;
     }
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    // eslint-disable-next-line
     const { password, password_confirmation, token } = body;
 
+    // eslint-disable-next-line no-unused-vars
     const payload = {
       password: crypto.createHash('sha256').update(password).digest('base64'),
       password_confirmation: crypto
@@ -283,6 +286,7 @@ class DashboardController {
             (
               await Service.query().where('serviceId', serviceId).count('*', 'total').select()
             )[0].$getAttribute('total'),
+            10,
           ) > 0
         );
 
@@ -315,6 +319,7 @@ class DashboardController {
             (
               await Workspace.query().where('workspaceId', workspaceId).count('*', 'total')
             )[0].$getAttribute('total'),
+            10,
           ) > 0
         );
 

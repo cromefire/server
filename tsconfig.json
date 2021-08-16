@@ -1,41 +1,44 @@
 {
-  "extends": "./node_modules/adonis-preset-ts/tsconfig",
-  "include": [
-    "**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "build"
-  ],
   "compilerOptions": {
+    "strict": false,
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "incremental": true,
+    "noUnusedParameters": false,
+    "removeComments": true,
+    "declaration": false,
+    "moduleResolution": "node",
     "outDir": "build",
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
     "rootDir": "./",
-    "sourceMap": true,
     "allowJs": true,
-    "target": "ES2018",
-    "paths": {
-      "App/*": [
-        "./app/*"
-      ],
-      "Config/*": [
-        "./config/*"
-      ],
-      "Contracts/*": [
-        "./contracts/*"
-      ],
-      "Database/*": [
-        "./database/*"
-      ]
-    },
-    "types": [
-      "@adonisjs/core",
-      "@adonisjs/repl",
-      "@adonisjs/session",
-      "@adonisjs/view",
-      "@adonisjs/lucid",
-      "@adonisjs/mail",
-      "@adonisjs/auth",
-      "@adonisjs/shield"
-    ]
-  }
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true
+  },
+  "include": ["**/*"],
+  "exclude": ["node_modules", "build"],
+  "paths": {
+    "App/*": ["./app/*"],
+    "Config/*": ["./config/*"],
+    "Contracts/*": ["./contracts/*"],
+    "Database/*": ["./database/*"]
+  },
+  "types": [
+    "@adonisjs/core",
+    "@adonisjs/repl",
+    "@adonisjs/session",
+    "@adonisjs/view",
+    "@adonisjs/lucid",
+    "@adonisjs/mail",
+    "@adonisjs/auth",
+    "@adonisjs/shield"
+  ]
 }

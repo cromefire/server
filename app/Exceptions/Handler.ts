@@ -14,7 +14,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   public async handle(error, { response }) {
     if (error.name === 'ValidationException') {
       return response.status(400).send('Invalid arguments');
-    } else if (error.name === 'InvalidSessionException') {
+    }
+    if (error.name === 'InvalidSessionException') {
       return response.status(401).redirect('/user/login');
     }
 

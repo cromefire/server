@@ -48,7 +48,7 @@ export default class AuthMiddleware {
      */
     let guardLastAttempted: string | undefined;
 
-    for (let guard of guards) {
+    for (const guard of guards) {
       guardLastAttempted = guard;
 
       if (await auth.use(guard).check()) {
@@ -57,6 +57,7 @@ export default class AuthMiddleware {
          * the rest of the request, since the user authenticated
          * succeeded here
          */
+        // eslint-disable-next-line no-param-reassign
         auth.defaultGuard = guard;
         return true;
       }

@@ -40,7 +40,7 @@ export default class GuestOnlyMiddleware {
    * during the current request.
    */
   protected async checkGuest(auth: HttpContextContract['auth'], guards: any[]) {
-    for (let guard of guards) {
+    for (const guard of guards) {
       if (await auth.use(guard).check()) {
         /**
          * Unable to authenticate using any guard

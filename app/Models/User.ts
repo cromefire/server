@@ -16,6 +16,7 @@ export default class User extends BaseModel {
 
   @column({ serializeAs: null })
   public password: string;
+
   /**
    * A relationship on tokens is required for auth to
    * work. Since features like `refreshTokens` or
@@ -24,14 +25,17 @@ export default class User extends BaseModel {
    */
   @hasMany(() => Token)
   public tokens: HasMany<typeof Token>;
+
   @hasMany(() => Service)
   public services: HasMany<typeof Service>;
+
   @hasMany(() => Workspace)
   public workspaces: HasMany<typeof Workspace>;
 
   @beforeSave()
   public static async hashPassword(user: User) {
     if (user.$dirty.password) {
+      // eslint-disable-next-line no-param-reassign
       user.password = await Hash.make(user.password);
     }
   }

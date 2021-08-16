@@ -71,15 +71,14 @@ if (Env.get('IS_DASHBOARD_ENABLED') !== 'false') {
     Route.post('forgot', 'DashboardController.forgotPassword').middleware('guest');
 
     Route.get('reset', async ({ view, request }) => {
-      const token = request.get().token;
+      const { token } = request.get();
       if (token) {
         return view.render('dashboard.resetPassword', { token });
-      } else {
-        return view.render('others.message', {
-          heading: 'Invalid token',
-          text: 'Please make sure you are using a valid and recent link to reset your password.',
-        });
       }
+      return view.render('others.message', {
+        heading: 'Invalid token',
+        text: 'Please make sure you are using a valid and recent link to reset your password.',
+      });
     }).middleware('guest');
     Route.post('reset', 'DashboardController.resetPassword').middleware('guest');
 
