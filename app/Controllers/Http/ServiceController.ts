@@ -1,15 +1,15 @@
-const Service = use("App/Models/Service");
-const { validateAll } = use("Validator");
-const Env = use("Env");
-const Helpers = use("Helpers");
+import Service from "App/Models/Service";
+import { schema } from "@ioc:Adonis/Core/Validator";
+import Env from "@ioc:Adonis/Core/Env";
+import Application from "@ioc:Adonis/Core/Application";
 
-const { v4: uuid } = require("uuid");
-const path = require("path");
-const fs = require("fs-extra");
+import { v4 as uuid } from "uuid";
+import path from "path";
+import fs from "fs-extra";
 
 class ServiceController {
   // Create a new service for user
-  async create({ request, response, auth }) {
+  public async create({ request, response, auth }) {
     try {
       await auth.getUser();
     } catch (error) {
@@ -17,25 +17,25 @@ class ServiceController {
     }
 
     // Validate user input
-    const validation = await validateAll(request.all(), {
-      name: "required|string",
-      recipeId: "required",
+    const serviceSchema = schema.create({
+      name: schema.string(),
+      recipeId: schema.string(),
     });
-    if (validation.fails()) {
-      return response.status(401).send({
-        message: "Invalid POST arguments",
-        messages: validation.messages(),
-        status: 401,
+    try {
+      await request.validate({
+        schema: serviceSchema,
       });
+    } catch (error) {
+      return response.badRequest(error.messages);
     }
 
     const data = request.all();
 
     // Get new, unused uuid
-    let serviceId;
+    let serviceId: string;
     do {
       serviceId = uuid();
-    } while ((await Service.query().where("serviceId", serviceId).fetch()).rows.length > 0); // eslint-disable-line no-await-in-loop
+    } while ((await Service.query().where("serviceId", serviceId)).length > 0); // eslint-disable-line no-await-in-loop
 
     await Service.create({
       userId: auth.user.id,
@@ -67,7 +67,7 @@ class ServiceController {
   }
 
   // List all services a user has created
-  async list({ response, auth }) {
+  public async list({ response, auth }) {
     try {
       await auth.getUser();
     } catch (error) {
@@ -103,7 +103,7 @@ class ServiceController {
     return response.send(servicesArray);
   }
 
-  async edit({ request, response, auth, params }) {
+  public async edit({ request, response, auth, params }) {
     try {
       await auth.getUser();
     } catch (error) {
@@ -117,20 +117,20 @@ class ServiceController {
         size: "2mb",
       });
       const { id } = params;
-      const service = (
-        await Service.query().where("serviceId", id).where("userId", auth.user.id).fetch()
-      ).rows[0];
+      const service = await Service.query()
+        .where("serviceId", id)
+        .where("userId", auth.user.id)
+        .first();
       const settings =
-        typeof service.settings === "string" ? JSON.parse(service.settings) : service.settings;
+        typeof service?.settings === "string" ? JSON.parse(service.settings) : service?.settings;
 
-      let iconId;
+      let iconId: string;
       do {
         iconId = uuid() + uuid();
-        // eslint-disable-next-line no-await-in-loop
-      } while (await fs.exists(path.join(Helpers.tmpPath("uploads"), iconId)));
+      } while (fs.existsSync(path.join(Application.tmpPath("uploads"), iconId)));
       iconId = `${iconId}.${icon.extname}`;
 
-      await icon.move(Helpers.tmpPath("uploads"), {
+      await icon.move(Application.tmpPath("uploads"), {
         name: iconId,
         overwrite: true,
       });
@@ -153,14 +153,14 @@ class ServiceController {
         .where("serviceId", id)
         .where("userId", auth.user.id)
         .update({
-          name: service.name,
+          name: service?.name,
           settings: JSON.stringify(newSettings),
         });
 
       return response.send({
         data: {
           id,
-          name: service.name,
+          name: service?.name,
           ...newSettings,
           iconUrl: `${Env.get("APP_URL")}/v1/icon/${newSettings.iconId}`,
           userId: auth.user.id,
@@ -173,14 +173,15 @@ class ServiceController {
     const { id } = params;
 
     // Get current settings from db
-    const serviceData = (
-      await Service.query().where("serviceId", id).where("userId", auth.user.id).fetch()
-    ).rows[0];
+    const serviceData = await Service.query()
+      .where("serviceId", id)
+      .where("userId", auth.user.id)
+      .first();
 
     const settings = {
-      ...(typeof serviceData.settings === "string"
-        ? JSON.parse(serviceData.settings)
-        : serviceData.settings),
+      ...(typeof serviceData?.settings === "string"
+        ? JSON.parse(serviceData?.settings)
+        : serviceData?.settings),
       ...data,
     };
 
@@ -194,14 +195,15 @@ class ServiceController {
       });
 
     // Get updated row
-    const service = (
-      await Service.query().where("serviceId", id).where("userId", auth.user.id).fetch()
-    ).rows[0];
+    const service = await Service.query()
+      .where("serviceId", id)
+      .where("userId", auth.user.id)
+      .first();
 
     return response.send({
       data: {
         id,
-        name: service.name,
+        name: service?.name,
         ...settings,
         iconUrl: `${Env.get("APP_URL")}/v1/icon/${settings.iconId}`,
         userId: auth.user.id,
@@ -210,11 +212,11 @@ class ServiceController {
     });
   }
 
-  async icon({ params, response }) {
+  public async icon({ params, response }) {
     const { id } = params;
 
-    const iconPath = path.join(Helpers.tmpPath("uploads"), id);
-    if (!(await fs.exists(iconPath))) {
+    const iconPath = path.join(Application.tmpPath("uploads"), id);
+    if (!fs.existsSync(iconPath)) {
       return response.status(404).send({
         status: "Icon doesn't exist",
       });
@@ -223,22 +225,20 @@ class ServiceController {
     return response.download(iconPath);
   }
 
-  async reorder({ request, response, auth }) {
+  public async reorder({ request, response, auth }) {
     const data = request.all();
 
     for (const service of Object.keys(data)) {
       // Get current settings from db
-      const serviceData = (
-        await Service.query() // eslint-disable-line no-await-in-loop
-          .where("serviceId", service)
-          .where("userId", auth.user.id)
-          .fetch()
-      ).rows[0];
+      const serviceData = await Service.query() // eslint-disable-line no-await-in-loop
+        .where("serviceId", service)
+        .where("userId", auth.user.id)
+        .first();
 
       const settings = {
-        ...(typeof serviceData.settings === "string"
-          ? JSON.parse(serviceData.settings)
-          : serviceData.settings),
+        ...(typeof serviceData?.settings === "string"
+          ? JSON.parse(serviceData?.settings)
+          : serviceData?.settings),
         order: data[service],
       };
 
@@ -281,11 +281,11 @@ class ServiceController {
     return response.send(servicesArray);
   }
 
-  update({ response }) {
+  public update({ response }) {
     return response.send([]);
   }
 
-  async delete({ params, auth, response }) {
+  public async delete({ params, auth, response }) {
     // Update data in database
     await Service.query().where("serviceId", params.id).where("userId", auth.user.id).delete();
 

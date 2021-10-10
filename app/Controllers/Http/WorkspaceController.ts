@@ -1,11 +1,11 @@
-const Workspace = use("App/Models/Workspace");
-const { validateAll } = use("Validator");
+import Workspace from "App/Models/Workspace";
+import { schema } from "@ioc:Adonis/Core/Validator";
 
-const { v4: uuid } = require("uuid");
+import { v4 as uuid } from "uuid";
 
 class WorkspaceController {
   // Create a new workspace for user
-  async create({ request, response, auth }) {
+  public async create({ request, response, auth }) {
     try {
       await auth.getUser();
     } catch (error) {
@@ -13,24 +13,26 @@ class WorkspaceController {
     }
 
     // Validate user input
-    const validation = await validateAll(request.all(), {
-      name: "required",
+    const workspaceSchema = schema.create({
+      name: schema.string(),
     });
-    if (validation.fails()) {
-      return response.status(401).send({
-        message: "Invalid POST arguments",
-        messages: validation.messages(),
-        status: 401,
+
+    try {
+      await request.validate({
+        schema: workspaceSchema,
       });
+    } catch (error) {
+      return response.badRequest(error.messages);
     }
 
     const data = request.all();
 
     // Get new, unused uuid
-    let workspaceId;
+    let workspaceId: string;
+
     do {
       workspaceId = uuid();
-    } while ((await Workspace.query().where("workspaceId", workspaceId).fetch()).rows.length > 0); // eslint-disable-line no-await-in-loop
+    } while ((await Workspace.query().where("workspaceId", workspaceId)).length > 0); // eslint-disable-line no-await-in-loop
 
     const order = (await auth.user.workspaces().fetch()).rows.length;
 
@@ -52,7 +54,7 @@ class WorkspaceController {
     });
   }
 
-  async edit({ request, response, auth, params }) {
+  public async edit({ request, response, auth, params }) {
     try {
       await auth.getUser();
     } catch (error) {
@@ -60,16 +62,16 @@ class WorkspaceController {
     }
 
     // Validate user input
-    const validation = await validateAll(request.all(), {
-      name: "required",
-      services: "required|array",
+    const workspaceSchema = schema.create({
+      name: schema.string(),
+      services: schema.array().anyMembers(),
     });
-    if (validation.fails()) {
-      return response.status(401).send({
-        message: "Invalid POST arguments",
-        messages: validation.messages(),
-        status: 401,
+    try {
+      await request.validate({
+        schema: workspaceSchema,
       });
+    } catch (error) {
+      return response.badRequest(error.messages);
     }
 
     const data = request.all();
@@ -85,26 +87,21 @@ class WorkspaceController {
       });
 
     // Get updated row
-    const workspace = (
-      await Workspace.query().where("workspaceId", id).where("userId", auth.user.id).fetch()
-    ).rows[0];
+    const workspace = await Workspace.query()
+      .where("workspaceId", id)
+      .where("userId", auth.user.id)
+      .first();
 
     return response.send({
-      id: workspace.workspaceId,
+      id: workspace?.workspaceId,
       name: data.name,
-      order: workspace.order,
+      order: workspace?.order,
       services: data.services,
       userId: auth.user.id,
     });
   }
 
-  async delete({
-    // eslint-disable-next-line no-unused-vars
-    _request,
-    response,
-    auth,
-    params,
-  }) {
+  public async delete({ request, response, auth, params }) {
     try {
       await auth.getUser();
     } catch (error) {
@@ -112,15 +109,16 @@ class WorkspaceController {
     }
 
     // Validate user input
-    const validation = await validateAll(params, {
-      id: "required",
+    const workspaceSchema = schema.create({
+      id: schema.string(),
     });
-    if (validation.fails()) {
-      return response.status(401).send({
-        message: "Invalid arguments",
-        messages: validation.messages(),
-        status: 401,
+
+    try {
+      await request.validate({
+        schema: workspaceSchema,
       });
+    } catch (error) {
+      return response.badRequest(error.messages);
     }
 
     const { id } = params;
@@ -134,7 +132,7 @@ class WorkspaceController {
   }
 
   // List all workspaces a user has created
-  async list({ response, auth }) {
+  public async list({ response, auth }) {
     try {
       await auth.getUser();
     } catch (error) {
@@ -145,16 +143,18 @@ class WorkspaceController {
     // Convert to array with all data Franz wants
     let workspacesArray = [];
     if (workspaces) {
-      workspacesArray = workspaces.map((workspace) => ({
-        id: workspace.workspaceId,
-        name: workspace.name,
-        order: workspace.order,
-        services:
-          typeof workspace.services === "string"
-            ? JSON.parse(workspace.services)
-            : workspace.services,
-        userId: auth.user.id,
-      }));
+      workspacesArray = workspaces.map(
+        (workspace: { workspaceId: string; name: string; order: number; services: string }) => ({
+          id: workspace.workspaceId,
+          name: workspace.name,
+          order: workspace.order,
+          services:
+            typeof workspace.services === "string"
+              ? JSON.parse(workspace.services)
+              : workspace.services,
+          userId: auth.user.id,
+        }),
+      );
     }
 
     return response.send(workspacesArray);

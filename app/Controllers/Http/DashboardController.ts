@@ -92,7 +92,6 @@ class DashboardController {
     // eslint-disable-next-line
     const { password, password_confirmation, token } = body;
 
-    // eslint-disable-next-line no-unused-vars
     const payload = {
       password: crypto.createHash("sha256").update(password).digest("base64"),
       password_confirmation: crypto
@@ -113,12 +112,6 @@ class DashboardController {
         text: "Please make sure you are using a valid and recent link to reset your password and that your passwords entered match.",
       });
     }
-
-    // eslint-disable-next-line no-unreachable
-    return view.render("others.message", {
-      heading: "Reset password",
-      text: "Successfully reset your password. You can now login to your account using your new password.",
-    });
   }
 
   public async account({ auth, view, response }) {
@@ -278,13 +271,13 @@ class DashboardController {
     try {
       for (const service of imported.services) {
         // Get new, unused uuid
-        let serviceId;
+        let serviceId: string;
         do {
           serviceId = uuid();
         } while (
           parseInt(
             (
-              await Service.query().where("serviceId", serviceId).count("*", "total").select()
+              await Service.query().where("serviceId", serviceId).count("*", "total")
             )[0].$getAttribute("total"),
             10,
           ) > 0
@@ -311,7 +304,7 @@ class DashboardController {
     // Import workspaces
     try {
       for (const workspace of imported.workspaces) {
-        let workspaceId;
+        let workspaceId: string;
         do {
           workspaceId = uuid();
         } while (

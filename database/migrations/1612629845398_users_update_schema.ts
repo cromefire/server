@@ -1,14 +1,13 @@
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use("Schema");
+import Schema from "@ioc:Adonis/Lucid/Schema";
 
 class UsersUpdateSchema extends Schema {
-  up() {
+  public up() {
     this.table("users", (table) => {
       table.string("lastname", 80).notNullable().default("");
     });
   }
 
-  down() {
+  public down() {
     this.table("users", (table) => {
       table.dropColumn("lastname");
     });

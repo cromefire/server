@@ -1,13 +1,13 @@
-const Recipe = use("App/Models/Recipe");
-const Helpers = use("Helpers");
-const Drive = use("Drive");
-const { validateAll } = use("Validator");
-const Env = use("Env");
+import Recipe from "App/Models/Recipe";
+import Drive from "@ioc:Adonis/Core/Drive";
+import Application from "@ioc:Adonis/Core/Application";
+import { rules, schema } from "@ioc:Adonis/Core/Validator";
+import Env from "@ioc:Adonis/Core/Env";
 
-const fetch = require("node-fetch");
-const targz = require("targz");
-const path = require("path");
-const fs = require("fs-extra");
+import fetch from "node-fetch";
+import targz from "targz";
+import path from "path";
+import fs from "fs-extra";
 
 const compress = (src, dest) =>
   new Promise((resolve, reject) => {
@@ -28,11 +28,11 @@ const compress = (src, dest) =>
 
 class RecipeController {
   // List official and custom recipes
-  async list({ response }) {
+  public async list({ response }) {
     const officialRecipes = JSON.parse(
       await (await fetch("https://api.franzinfra.com/v1/recipes")).text(),
     );
-    const customRecipesArray = (await Recipe.all()).rows;
+    const customRecipesArray = await Recipe.all();
     const customRecipes = customRecipesArray.map((recipe) => ({
       id: recipe.recipeId,
       name: recipe.name,
@@ -45,26 +45,26 @@ class RecipeController {
   }
 
   // Create a new recipe using the new.html page
-  async create({ request, response }) {
+  public async create({ request, response }) {
     // Check if recipe creation is enabled
     if (Env.get("IS_CREATION_ENABLED") === "false") {
-      // eslint-disable-line eqeqeq
       return response.send("This server doesn't allow the creation of new recipes.");
     }
 
     // Validate user input
-    const validation = await validateAll(request.all(), {
-      name: "required|string",
-      id: "required|unique:recipes,recipeId",
-      author: "required|accepted",
-      svg: "required|url",
+    const recipeSchema = schema.create({
+      name: schema.string(),
+      id: schema.string({}, [rules.unique({ table: "recipes", column: "recipeId" })]),
+      author: schema.string(),
+      svg: schema.string({}, [rules.url()]),
     });
-    if (validation.fails()) {
-      return response.status(401).send({
-        message: "Invalid POST arguments",
-        messages: validation.messages(),
-        status: 401,
+
+    try {
+      await request.validate({
+        schema: recipeSchema,
       });
+    } catch (error) {
+      return response.badRequest(error.messages);
     }
 
     const data = request.all();
@@ -79,15 +79,15 @@ class RecipeController {
     }
 
     // Clear temporary recipe folder
-    await fs.emptyDir(Helpers.tmpPath("recipe"));
+    await fs.emptyDir(Application.tmpPath("recipe"));
 
     // Move uploaded files to temporary path
     const files = request.file("files");
-    await files.moveAll(Helpers.tmpPath("recipe"));
+    await files.moveAll(Application.tmpPath("recipe"));
 
     // Compress files to .tar.gz file
-    const source = Helpers.tmpPath("recipe");
-    const destination = path.join(Helpers.appRoot(), `/recipes/${data.id}.tar.gz`);
+    const source = Application.tmpPath("recipe");
+    const destination = path.join(Application.appRoot, `/recipes/${data.id}.tar.gz`);
 
     compress(source, destination);
 
@@ -109,26 +109,27 @@ class RecipeController {
   }
 
   // Search official and custom recipes
-  async search({ request, response }) {
+  public async search({ request, response }) {
     // Validate user input
-    const validation = await validateAll(request.all(), {
-      needle: "required",
+    const recipeSchema = schema.create({
+      needle: schema.string(),
     });
-    if (validation.fails()) {
-      return response.status(401).send({
-        message: "Please provide a needle",
-        messages: validation.messages(),
-        status: 401,
+
+    try {
+      await request.validate({
+        schema: recipeSchema,
       });
+    } catch (error) {
+      return response.badRequest(error.messages);
     }
 
     const needle = request.input("needle");
 
     // Get results
-    let results;
+    let results: any[];
 
     if (needle === "ferdi:custom") {
-      const dbResults = (await Recipe.all()).toJSON();
+      const dbResults = await Recipe.all();
       results = dbResults.map((recipe) => ({
         id: recipe.recipeId,
         name: recipe.name,
@@ -137,7 +138,6 @@ class RecipeController {
     } else {
       let remoteResults = [];
       if (Env.get("CONNECT_WITH_FRANZ") === "true") {
-        // eslint-disable-line eqeqeq
         remoteResults = JSON.parse(
           await (
             await fetch(
@@ -146,9 +146,8 @@ class RecipeController {
           ).text(),
         );
       }
-      const localResultsArray = (
-        await Recipe.query().where("name", "LIKE", `%${needle}%`).fetch()
-      ).toJSON();
+
+      const localResultsArray = await Recipe.query().where("name", "LIKE", `%${needle}%`);
       const localResults = localResultsArray.map((recipe) => ({
         id: recipe.recipeId,
         name: recipe.name,
@@ -162,17 +161,18 @@ class RecipeController {
   }
 
   // Download a recipe
-  async download({ response, params }) {
+  public async download({ request, response, params }) {
     // Validate user input
-    const validation = await validateAll(params, {
-      recipe: "required|accepted",
+    const recipeSchema = schema.create({
+      recipe: schema.string(),
     });
-    if (validation.fails()) {
-      return response.status(401).send({
-        message: "Please provide a recipe ID",
-        messages: validation.messages(),
-        status: 401,
+
+    try {
+      await request.validate({
+        schema: recipeSchema,
       });
+    } catch (error) {
+      return response.badRequest(error.messages);
     }
 
     const service = params.recipe;

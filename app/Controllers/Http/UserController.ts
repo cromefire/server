@@ -1,16 +1,16 @@
-const User = use("App/Models/User");
-const Service = use("App/Models/Service");
-const Workspace = use("App/Models/Workspace");
-const { validateAll } = use("Validator");
-const Env = use("Env");
+import User from "App/Models/User";
+import Service from "App/Models/Service";
+import Workspace from "App/Models/Workspace";
+import { rules, schema } from "@ioc:Adonis/Core/Validator";
+import Env from "@ioc:Adonis/Core/Env";
 
-const atob = require("atob");
-const btoa = require("btoa");
-const fetch = require("node-fetch");
-const { v4: uuid } = require("uuid");
-const crypto = require("crypto");
+import atob from "atob";
+import btoa from "btoa";
+import fetch from "node-fetch";
+import { v4 as uuid } from "uuid";
+import crypto from "crypto";
 
-const franzRequest = (route, method, auth) =>
+const franzRequest = (route: string, method: string, auth: string): Promise<unknown> =>
   new Promise((resolve, reject) => {
     const base = "https://api.franzinfra.com/v1/";
     const user =
@@ -33,7 +33,7 @@ const franzRequest = (route, method, auth) =>
 
 class UserController {
   // Register a new user
-  async signup({ request, response, auth }) {
+  public async signup({ request, response, auth }) {
     // eslint-disable-next-line eqeqeq
     if (Env.get("IS_REGISTRATION_ENABLED") == "false") {
       return response.status(401).send({
@@ -43,25 +43,24 @@ class UserController {
     }
 
     // Validate user input
-    const validation = await validateAll(request.all(), {
-      firstname: "required",
-      lastname: "required",
-      email: "required|email|unique:users,email",
-      password: "required",
+    const userSchema = schema.create({
+      firstname: schema.string(),
+      lastname: schema.string(),
+      email: schema.string({}, [rules.email(), rules.unique({ table: "users", column: "email" })]),
+      password: schema.string(),
     });
-
-    if (validation.fails()) {
-      return response.status(401).send({
-        message: "Invalid POST arguments",
-        messages: validation.messages(),
-        status: 401,
+    try {
+      await request.validate({
+        schema: userSchema,
       });
+    } catch (error) {
+      return response.badRequest(error.messages);
     }
 
     const data = request.only(["firstname", "lastname", "email", "password"]);
 
     // Create user in DB
-    let user;
+    let user: User;
     try {
       user = await User.create({
         email: data.email,
@@ -86,7 +85,7 @@ class UserController {
   }
 
   // Login using an existing user
-  async login({ request, response, auth }) {
+  public async login({ request, response, auth }) {
     if (!request.header("Authorization")) {
       return response.status(401).send({
         message: "Please provide authorization",
@@ -126,7 +125,7 @@ class UserController {
   }
 
   // Return information about the current user
-  async me({ response, auth }) {
+  public async me({ response, auth }) {
     try {
       await auth.getUser();
     } catch (error) {
@@ -153,7 +152,7 @@ class UserController {
     });
   }
 
-  async updateMe({ request, response, auth }) {
+  public async updateMe({ request, response, auth }) {
     let settings = auth.user.settings || {};
     if (typeof settings === "string") {
       settings = JSON.parse(settings);
@@ -164,7 +163,6 @@ class UserController {
       ...request.all(),
     };
 
-    // eslint-disable-next-line no-param-reassign
     auth.user.settings = JSON.stringify(newSettings);
     await auth.user.save();
 
@@ -188,7 +186,7 @@ class UserController {
     });
   }
 
-  async import({ request, response, view }) {
+  public async import({ request, response, view }) {
     // eslint-disable-next-line eqeqeq
     if (Env.get("IS_REGISTRATION_ENABLED") == "false") {
       return response.status(401).send({
@@ -198,13 +196,17 @@ class UserController {
     }
 
     // Validate user input
-    const validation = await validateAll(request.all(), {
-      email: "required|email|unique:users,email",
-      password: "required",
+    const userSchema = schema.create({
+      email: schema.string({}, [rules.email(), rules.unique({ table: "users", column: "email" })]),
+      password: schema.string(),
     });
-    if (validation.fails()) {
+    try {
+      await request.validate({
+        schema: userSchema,
+      });
+    } catch (error) {
       let errorMessage = "There was an error while trying to import your account:\n";
-      for (const message of validation.messages()) {
+      for (const message of error.messages()) {
         if (message.validation === "required") {
           errorMessage += `- Please make sure to supply your ${message.field}\n`;
         } else if (message.validation === "unique") {
@@ -277,7 +279,7 @@ class UserController {
     }
 
     // Get user information
-    let userInf = false;
+    let userInf: User;
     try {
       userInf = await franzRequest("me", "GET", token);
     } catch (e) {
@@ -291,7 +293,7 @@ class UserController {
     }
 
     // Create user in DB
-    let user;
+    let user: User;
     try {
       user = await User.create({
         email: userInf.email,
@@ -312,11 +314,11 @@ class UserController {
 
       for (const service of services) {
         // Get new, unused uuid
-        let serviceId;
+        let serviceId: string;
         do {
           serviceId = uuid();
           // eslint-disable-next-line no-await-in-loop
-        } while ((await Service.query().where("serviceId", serviceId).fetch()).rows.length > 0);
+        } while ((await Service.query().where("serviceId", serviceId)).length > 0);
 
         // eslint-disable-next-line no-await-in-loop
         await Service.create({
@@ -339,12 +341,12 @@ class UserController {
       const workspaces = await franzRequest("workspace", "GET", token);
 
       for (const workspace of workspaces) {
-        let workspaceId;
+        let workspaceId: string;
         do {
           workspaceId = uuid();
         } while (
           // eslint-disable-next-line no-await-in-loop
-          (await Workspace.query().where("workspaceId", workspaceId).fetch()).rows.length > 0
+          (await Workspace.query().where("workspaceId", workspaceId)).length > 0
         );
 
         const services = workspace.services.map((service) => serviceIdTranslation[service]);

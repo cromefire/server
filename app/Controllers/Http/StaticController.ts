@@ -1,13 +1,13 @@
 /**
  * Controller for routes with static responses
  */
-const Helpers = use("Helpers");
-const fs = require("fs-extra");
-const path = require("path");
+import Application from "@ioc:Adonis/Core/Application";
+import fs from "fs-extra";
+import path from "path";
 
 class StaticController {
   // Enable all features
-  features({ response }) {
+  public features({ response }) {
     return response.send({
       needToWaitToProceed: false,
       isSpellcheckerPremiumFeature: false,
@@ -69,12 +69,12 @@ class StaticController {
   }
 
   // Return an empty array
-  emptyArray({ response }) {
+  public emptyArray({ response }) {
     return response.send([]);
   }
 
   // Payment plans availible
-  plans({ response }) {
+  public plans({ response }) {
     return response.send({
       month: {
         id: "franz-supporter-license",
@@ -88,18 +88,18 @@ class StaticController {
   }
 
   // Return list of popular recipes (copy of the response Franz's API is returning)
-  popularRecipes({ response }) {
+  public popularRecipes({ response }) {
     return response.send(
       fs
-        .readJsonSync(path.join(Helpers.appRoot(), "officialrecipes", "recipes", "all.json"))
+        .readJsonSync(path.join(Application.appRoot, "officialrecipes", "recipes", "all.json"))
         .filter((recipe) => recipe.featured),
     );
   }
 
   // Show announcements
-  async announcement({ response, params }) {
+  public async announcement({ response, params }) {
     const announcement = path.join(
-      Helpers.resourcesPath(),
+      Application.resourcesPath(),
       "announcements",
       `${params.version}.json`,
     );
