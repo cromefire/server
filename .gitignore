@@ -8,13 +8,14 @@ tmp
 .env
 
 # The development sqlite file
-data*/development.sqlite
-data*/adonis.sqlite
+*.sqlite
 
 # Uploaded recipes
 recipes/
 
 .DS_Store
+public/terms.html
+public/privacy.html
 
 resources/announcements/*.json
 !resources/announcements/version.json
