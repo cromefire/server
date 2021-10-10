@@ -1,4 +1,4 @@
-/* eslint-env browser */
+// @ts-nocheck
 const elDrop = document.getElementById("dropzone");
 const submitBtn = document.getElementById("submitbutton");
 const fileInput = document.getElementById("files");

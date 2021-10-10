@@ -1,16 +1,17 @@
 import Env from "@ioc:Adonis/Core/Env";
+import { DriveConfig } from "@ioc:Adonis/Core/Drive";
 
-const driveConfig = {
+const driveConfig: DriveConfig = {
   /*
   |--------------------------------------------------------------------------
   | Default disk
   |--------------------------------------------------------------------------
   |
-  | The default disk is used when you interact with the file system without
-  | defining a disk name
+  | The default disk to use for managing file uploads. The value is driven by
+  | the `DRIVE_DISK` environment variable.
   |
   */
-  default: "local",
+  disk: Env.get("DRIVE_DISK"),
 
   disks: {
     /*

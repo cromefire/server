@@ -6,18 +6,10 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "paths": {
-      "App/*": [
-        "./app/*"
-      ],
-      "Config/*": [
-        "./config/*"
-      ],
-      "Contracts/*": [
-        "./contracts/*"
-      ],
-      "Database/*": [
-        "./database/*"
-      ]
+      "App/*": ["./app/*"],
+      "Config/*": ["./config/*"],
+      "Contracts/*": ["./contracts/*"],
+      "Database/*": ["./database/*"]
     },
     "types": [
       "@adonisjs/core",
@@ -31,14 +23,6 @@
       "@adonisjs/validator"
     ]
   },
-  "include": [
-    "**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "build",
-    "officialrecipes",
-    "docs",
-    "public"
-  ]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "build", "officialrecipes", "docs"]
 }

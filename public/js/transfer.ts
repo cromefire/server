@@ -1,4 +1,4 @@
-/* eslint-env browser */
+// @ts-nocheck
 const submitBtn = document.getElementById("submit");
 const fileInput = document.getElementById("file");
 const fileOutput = document.getElementById("fileoutput");
